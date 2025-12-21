@@ -37,6 +37,12 @@ done
 # ==========================================
 # 4. 代理与别名设置
 # ==========================================
+# 1. 启动即自动开启代理
+export http_proxy=http://127.0.0.1:7897
+export https_proxy=http://127.0.0.1:7897
+export all_proxy=http://127.0.0.1:7897
+
+# 2. 保留别名以便后续手动开关（可选）
 alias proxy="export http_proxy=http://127.0.0.1:7897 https_proxy=http://127.0.0.1:7897 all_proxy=http://127.0.0.1:7897"
 alias unproxy="unset http_proxy https_proxy all_proxy"
 
@@ -79,3 +85,13 @@ bindkey '^[[B' down-line-or-search
 if [[ -o interactive ]] && command -v fastfetch >/dev/null 2>&1; then
     fastfetch --logo small --structure Title:Separator:OS:Host:Kernel:Uptime:Shell:Terminal:CPU:Memory
 fi
+export TERMINAL=ghostty
+# >>> xmake >>>
+test -f "/home/zz/.xmake/profile" && source "/home/zz/.xmake/profile"
+# <<< xmake <<<# 使 Zsh 补全大小写不敏感
+zstyle ":completion:*" matcher-list "m:{a-z A-Z}={A-Z a-z}"
+# --- 输入法配置 (解决 VS Code 无法打字) ---
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export GLFW_IM_MODULE=ibus # 有些应用需要这个兼容
