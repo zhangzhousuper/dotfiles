@@ -1,0 +1,42 @@
+# ========== 字体设置 ==========
+font-family = "Maple Mono NF CN"
+font-size = 13
+# Linux 下 13-14号字通常相当于 Mac 的 17号，视 DPI 而定，可自行调整
+adjust-cell-height = 25%
+font-feature = calt, cv01, cv03, ss01, ss02, ss03
+font-thicken = true
+
+# ========== 主题设置 ==========
+theme = GitHub Dark Dimmed
+
+# ========== 窗口尺寸 ==========
+window-width = 175
+window-height = 45
+window-save-state = always
+
+# ========== 光标设置 ==========
+cursor-style = block
+cursor-style-blink = true
+cursor-color = #ff9e64
+cursor-text = #1a1b26
+
+# ========== 窗口外观 (Linux) ==========
+window-padding-x = 8
+window-padding-y = 8
+# Linux 不需要 macos-window-shadow
+# 窗口装饰由 GNOME/KDE 管理，如果想去边框可开启:
+# window-decoration = false 
+
+# ========== 其他优化 ==========
+background-opacity = 0.97
+scrollback-limit = 200000000
+mouse-hide-while-typing = true
+
+# ========== Shell Integration ==========
+shell-integration = zsh
+shell-integration-features = no-cursor,title
+keybind = shift+enter=text:\x1b\r
+keybind = ctrl+enter=text:\\\r
+
+command = /usr/bin/zsh --login
+shell-integration = zsh

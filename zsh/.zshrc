@@ -44,3 +44,8 @@ setopt HIST_IGNORE_DUPS
 
 export PATH=$HOME/.local/bin:$PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+
+# 改回 http 协议，这是你 Clash 端口目前支持的
+alias proxy="export http_proxy=http://127.0.0.1:7897 https_proxy=http://127.0.0.1:7897 all_proxy=http://127.0.0.1:7897"
+alias unproxy="unset http_proxy https_proxy all_proxy"
