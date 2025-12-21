@@ -1,51 +1,81 @@
+# ==========================================
+# 1. 基础环境与路径配置
+# ==========================================
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
-. "$HOME/.local/bin/env"
+export PATH="$HOME/.local/bin:$PATH"
 
-# 1. 初始化 Starship
+# CUDA 路径 (针对 Triton/GPU 开发)
+if [ -d "/usr/local/cuda" ]; then
+    export CUDA_HOME=/usr/local/cuda
+    export PATH="$CUDA_HOME/bin:$PATH"
+    export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$LD_LIBRARY_PATH"
+fi
+
+# ==========================================
+# 2. 提示符与补全系统
+# ==========================================
 eval "$(starship init zsh)"
 
-# 2. 命令补全系统
 autoload -Uz compinit
-# 每天只检查一次缓存
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
     compinit
 else
     compinit -C
 fi
 
-# 3. 加载插件 (指向我们手动 Clone 的位置)
-source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# zsh-completions 稍微特殊，需要添加到 fpath
+# 修正：确保 fpath 赋值正确
 fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
 
-# 4. Fastfetch (如果已安装)
-if command -v fastfetch &>/dev/null; then
-    fastfetch --logo small --structure Title:Separator:OS:Host:Kernel:Uptime:Shell:Terminal:CPU:Memory
-fi
+# ==========================================
+# 3. 插件加载 (添加了更稳健的判断)
+# ==========================================
+for plugin in zsh-autosuggestions/zsh-autosuggestions.zsh zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+    [ -f "$HOME/.zsh/plugins/$plugin" ] && source "$HOME/.zsh/plugins/$plugin"
+done
 
-# 5. 别名 (可选)
-alias ls='ls --color=auto'
-alias ll='ls -l --color=auto'
-
-
-# 历史记录文件路径
-HISTFILE=~/.zsh_history
-# 内存和磁盘中保存的命令数量
-HISTSIZE=10000
-SAVEHIST=10000
-# 立即写入文件，而不是等终端关闭
-setopt INC_APPEND_HISTORY
-# 多个终端窗口共享历史记录
-setopt SHARE_HISTORY
-# 忽略重复的命令
-setopt HIST_IGNORE_DUPS
-
-export PATH=$HOME/.local/bin:$PATH
-export PATH="$HOME/.local/bin:$PATH"
-
-
-# 改回 http 协议，这是你 Clash 端口目前支持的
+# ==========================================
+# 4. 代理与别名设置
+# ==========================================
 alias proxy="export http_proxy=http://127.0.0.1:7897 https_proxy=http://127.0.0.1:7897 all_proxy=http://127.0.0.1:7897"
 alias unproxy="unset http_proxy https_proxy all_proxy"
+
+if command -v eza >/dev/null 2>&1; then
+    alias ls="eza --icons --group-directories-first"
+    alias ll="eza -lh --icons --group-directories-first"
+    alias la="eza -a --icons"
+    alias tree="eza --tree --icons"
+else
+    alias ls='ls --color=auto'
+    alias ll='ls -l --color=auto'
+fi
+
+command -v batcat >/dev/null 2>&1 && alias cat="batcat --paging=never"
+command -v btm >/dev/null 2>&1 && alias top="btm"
+alias vi="nvim"
+alias v="nvim"
+alias lg="lazygit"
+alias dot="cd ~/dotfiles"
+
+# ==========================================
+# 5. 历史记录与交互
+# ==========================================
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt INTERACTIVE_COMMENTS
+
+# 历史搜索快捷键
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+
+# ==========================================
+# 6. 启动信息
+# ==========================================
+if [[ -o interactive ]] && command -v fastfetch >/dev/null 2>&1; then
+    fastfetch --logo small --structure Title:Separator:OS:Host:Kernel:Uptime:Shell:Terminal:CPU:Memory
+fi
