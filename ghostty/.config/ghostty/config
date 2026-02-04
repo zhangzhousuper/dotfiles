@@ -38,5 +38,4 @@ shell-integration-features = no-cursor,title
 keybind = shift+enter=text:\x1b\r
 keybind = ctrl+enter=text:\\\r
 
-command = /usr/bin/zsh --login
 shell-integration = zsh
